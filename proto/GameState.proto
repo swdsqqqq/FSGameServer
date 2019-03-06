@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package Pro;
+
+option java_package = "com.fsgame.proto";
+option java_outer_classname = "MSGGameState";
+
+import "BaseCommon.proto";
+import "PlayerCommon.proto";
+import "ObjectCommon.proto";
+
+//登录请求
+message LoginGameC2S {
+	string username = 1;
+	string password = 2;
+}
+
+//服务器响应登录
+message LoginGameS2C {
+	//角色  待定
+	LoginState state = 1;
+}
+
+message LoadGameMapC2S {
+	//no info
+	float time = 1;
+}
+
+message LoadGameMapS2C {
+	PlayerCommon mainplayer = 1; //主玩家 基本信息
+}
+
+message ObjectSyncS2C {
+	repeated ObjectSync objects = 1;
+	repeated ObjectSync enter = 2;
+	repeated int32 leave = 3;
+}

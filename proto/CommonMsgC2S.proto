@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package Pro;
+
+option java_package = "com.fsgame.proto";
+option java_outer_classname = "MSGCommonMsgC2S";
+
+//_Req		请求信息
+//_Res		请求结果
+//_ReqRes	必须等待结果的请求
+//_Radio	广播消息
+
+//公共返回消息头
+message CommonMsgC2S {
+	string msgType = 1;
+}

@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package Pro;
+
+option java_package = "com.fsgame.proto";
+option java_outer_classname = "MSGBaseProtoBufMessage";
+
+//_Req		请求信息
+//_Res		请求结果
+//_ReqRes	必须等待结果的请求
+//_Radio	广播消息
+
+//公共返回消息头
+message ResMsg {
+	int32 code = 1;
+	string msg = 2;
+}
+
+message Transform{
+	// 玩家location
+	float locationX = 1;
+	float locationY = 2;
+	float locationZ = 3;
+	// 玩家rotation
+	float rotationX = 4;
+	float rotationY = 5;
+	float rotationZ = 6;
+	// 玩家Scale
+	float scaleX = 7;
+	float scaleY = 8;
+	float scaleZ = 9;
+}
+
+message PlayerInfo{
+      string playerIP = 1;            //玩家IP
+      int32 playerID = 2;               //玩家ID
+      int32 heath = 3;                  //玩家生命
+      int32 exp = 4;                    //玩家经验值
+      string map = 5;                 //玩家地图
+      int32 grade = 6;                  //玩家等级
+      string playerSkeletalMesh = 7;  //玩家的Mesh  
+      string weeponMesh = 8;          //玩家武器Mesh
+      Transform transform = 9;        //玩家Transform
+}

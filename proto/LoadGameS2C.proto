@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package Pro;
+
+option java_package = "com.fsgame.proto";
+option java_outer_classname = "MSGLoadGameS2C";
+
+//_Req		请求信息
+//_Res		请求结果
+//_ReqRes	必须等待结果的请求
+//_Radio	广播消息
+
+//公共返回消息头
+message LoadGameS2C {
+	int32 user_id = 1;
+	int32 error_type = 2;
+	string player_ip = 3;
+	int32 player_id = 4;
+	int32 player_grade = 5;
+	int32 player_exp = 6;
+	int32 player_hp = 7;
+	string playerlastmap = 8;
+	float playerlocationx = 9;
+	float playerlocationy = 10;
+	float playerlocationz = 11;
+	float playerrotationx = 12;
+	float playerrotationy = 13;
+	float playerrotationz = 14;
+	float playerscalex = 15;
+	float playerscaley = 16;
+	float playerscalez = 17;
+	string playerweeponmesh = 18;
+	string playermesh = 19;
+}
