@@ -29,35 +29,36 @@ import io.netty.channel.ChannelId;
 public class LoadGameMapC2SImp implements MessageInterface{
 	private ChannelHandlerContext ctx;
 	private LoadGameMapC2S msgread = null;
+	private FSPlayerInfo playerInfo = null;
 	
 	@Override
 	public void readMessage(byte[] msgs, ChannelHandlerContext ctx) throws InvalidProtocolBufferException {
 		this.ctx =ctx;
 		msgread = LoadGameMapC2S.parseFrom(msgs);
-//		System.out.println("Time -------  " + msgread.getTime());
 		writeMessage();
 	}
 
 	@Override
 	public void writeMessage() {
+		
 		Integer PlayerID = FSGameObject.findClientID(ctx.channel().id());
-//		if(PlayerID == 0) {
-//			System.out.println("PlayerID=================0");
-//		}else {
-//			System.out.println("PlayerID=================" + PlayerID);
-//		}
+		
+		//获取玩家对象
+		playerInfo = FSGameObject.PlayerExtents.get(PlayerID);
+		
 		LoadGameMapS2C.Builder resp = LoadGameMapS2C.newBuilder();
 		
 		PlayerCommon.Builder player = PlayerCommon.newBuilder();
-		Coordinate.Builder coor = Coordinate.newBuilder();
-		coor.setX(0.0f);
-		coor.setY(FSGameObject.Clients.size() + 30.0f);
-		coor.setZ(0.0f);
-		coor.setO(0.0f);
-		coor.setMap(0001);
 		
-		player.setBaseid(PlayerID);
-		player.setName("swd");
+		Coordinate.Builder coor = Coordinate.newBuilder();
+		coor.setX(playerInfo.getX());
+		coor.setY(playerInfo.getY());
+		coor.setZ(playerInfo.getZ());
+		coor.setO(playerInfo.getO());
+		coor.setMap(playerInfo.getMapId());
+		
+		player.setBaseid(playerInfo.getPlayerBaseId());
+		player.setName(playerInfo.getPlayerName());
 		player.setCoor(coor.build());
 		
 		resp.setMainplayer(player.build());
@@ -76,10 +77,6 @@ public class LoadGameMapC2SImp implements MessageInterface{
 		message.setHeader(header);
 		
 		ctx.writeAndFlush(message);
-		
-		//将玩家进入地图信息存入服务器
-//		FSGameObject.PlayerEnters.put(PlayerID, FSCommonLib.CreatePlayerInfo(player));
-		FSGameObject.PlayerExtents.put(PlayerID, FSCommonLib.CreatePlayerInfo(player));
 		
 		//广播自身信息
 		FSGameObject.broadCastSelfEnterToAllClient(player,ctx.channel().id());

@@ -28,7 +28,7 @@ public class HeatALiveC2SImp implements MessageInterface{
 		msgread = HeatALiveC2S.parseFrom(msgs);
 		//这里后期需要做一个时间戳的运算 判断客户端时间 
 		
-		writeMessage();
+	//	writeMessage();
 	}
 
 	@Override

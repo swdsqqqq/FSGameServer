@@ -20,6 +20,12 @@ enum MoveType {
 	_STOPJUMP_ = 5;
 }
 
+//聊天类型
+enum ChatType {
+	_PLAYERCHAT_ = 0;   //玩家信息
+	_SYSTEMCHAT_ = 1;   //系统推送信息
+}
+
 //玩家坐标信息
 message Coordinate {
 	float x = 1;  //x
@@ -29,3 +35,4 @@ message Coordinate {
  
 	int32 map = 5; //地图id
 }
+

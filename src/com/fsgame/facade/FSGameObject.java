@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.fsgame.dao.MySQLDBHelper;
 import com.fsgame.db.FSPlayerInfo;
 import com.fsgame.mode.FSMessage;
 import com.fsgame.mode.MessageHeader;
@@ -40,6 +41,10 @@ public class FSGameObject {
 	public static ArrayList<Integer> PlayerLeaves = new ArrayList<>();
 	
 	
+	/**
+	 * @author sunweidong 
+	 * @category 根据channel的ID查找对应的session
+	 * */
 	public static Integer findClientID(ChannelId id) {
 		Iterator<Entry<Integer, ChannelId>> entries = Clients.entrySet().iterator();
 		while (entries.hasNext()) {
@@ -53,13 +58,46 @@ public class FSGameObject {
 		return null;
 	}
 	/**
-	 * 同步自身加入游戏地图信息给其他所有玩家
+	 * @author sunweidong
+	 * @category 同步自身加入游戏地图信息给其他所有玩家
 	 * */
 	public static void broadCastSelfEnterToAllClient(PlayerCommon.Builder playerSelf, ChannelId id) {
 		ObjectSyncS2C.Builder ObjectSyncs = ObjectSyncS2C.newBuilder();
 		ObjectSync.Builder object = ObjectSync.newBuilder();
 		object.setPlayerbase(playerSelf);
 		ObjectSyncs.addEnter(object);
+		FSMessage message = new FSMessage();
+		
+		ObjectSyncS2C msgTemp = ObjectSyncs.build();
+		
+		byte[] bytes = msgTemp.toByteArray();
+		
+		message.setData(bytes);
+		
+		MessageHeader header = new MessageHeader();
+		String MsgTypeStr = FSCommonLib.getKey(ObjectSyncS2C.class.toString());
+		header.setLength(bytes.length);
+		header.setMsgType(MsgTypeStr);
+		message.setHeader(header);
+		
+		Iterator<Channel> Channels = FSChannelGroups.CHANNEL_GROUP.iterator();
+		while (Channels.hasNext()) {
+		    Channel entry = Channels.next();
+		    //给不是本机客户端发消息
+		    if(entry.id() != id) {
+		    	entry.writeAndFlush(message);
+		    }
+		}
+	}
+	
+	/**
+	 * @author sunweidong
+	 * @category 同步自身离开游戏地图信息给其他所有玩家
+	 * */
+	public static void broadCastSelfLeaveToAllClient(Integer playerID, ChannelId id) {
+		ObjectSyncS2C.Builder ObjectSyncs = ObjectSyncS2C.newBuilder();
+		ObjectSyncs.addLeave(playerID);
+		
 		FSMessage message = new FSMessage();
 		
 		ObjectSyncS2C msgTemp = ObjectSyncs.build();
@@ -220,7 +258,7 @@ public class FSGameObject {
 		    	entry.writeAndFlush(message);
 		    }
 		}
-		ctx.writeAndFlush(message);
+//		ctx.writeAndFlush(message);
 	}
 	
 	/**
@@ -229,22 +267,23 @@ public class FSGameObject {
 	 * @category 用户下线后移除服务器的数据  并发送消息通知其他客户端
 	 * */
 	public static void removePlayerInfoFromClient(ChannelHandlerContext ctx) {
-		Integer playerID = findClientID(ctx.channel().id());
-		//移除客户端channel索引
-		Clients.remove(playerID);
-		//移除客户端存储在服务器游戏对象数据
-		clientGameObjects.remove(playerID);
-		//缓存服务器中存储的客户端玩家数据
-		FSPlayerInfo player = getPlayerByID(playerID);
-		//移除客户端存储在服务器的所有玩家列表对象
-		PlayerExtents.remove(playerID);
-		//玩家ID加入到服务器离开列表
-		PlayerLeaves.add(playerID);
-		//发送一条ObjectSync消息
-		//.................
-		//存储玩家的数据到数据库
-		//.................
-		
+		if(ctx.channel().isOpen()) {
+			Integer playerID = findClientID(ctx.channel().id());
+			//移除客户端channel索引
+			Clients.remove(playerID);
+			//移除客户端存储在服务器游戏对象数据
+			clientGameObjects.remove(playerID);
+			//缓存服务器中存储的客户端玩家数据
+			FSPlayerInfo player = getPlayerByID(playerID);
+			//移除客户端存储在服务器的所有玩家列表对象
+			PlayerExtents.remove(playerID);
+			//玩家ID加入到服务器离开列表
+			PlayerLeaves.add(playerID);
+			//发送一条ObjectSync消息
+			broadCastSelfLeaveToAllClient(playerID,ctx.channel().id());
+			//存储玩家的数据到数据库
+			MySQLDBHelper.savePlayer(player);
+		}
 	}
 	
 	/**

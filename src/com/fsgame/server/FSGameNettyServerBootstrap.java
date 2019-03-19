@@ -1,5 +1,7 @@
 package com.fsgame.server;
 
+import java.util.concurrent.TimeUnit;
+
 import com.fsgame.facade.FSCommonLib;
 import com.fsgame.server.decoder.CustomProtobufDecoder;
 import com.fsgame.server.encoder.CustomProtobufEncoder;
@@ -15,6 +17,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 
@@ -45,7 +48,7 @@ public class FSGameNettyServerBootstrap {
 				@Override
 				protected void initChannel(SocketChannel socketChannel) throws Exception {
 					ChannelPipeline ch = socketChannel.pipeline();
-					
+					ch.addLast(new IdleStateHandler(20,0,0, TimeUnit.SECONDS));
 					//
 					ch.addLast("decoder",new CustomProtobufDecoder());
 					ch.addLast("encoder",new CustomProtobufEncoder());

@@ -35,6 +35,8 @@ public class FSCommonLib {
 		ProtocolMap.put("0010", "class com.fsgame.proto.MSGHeatALiveS2C$HeatALiveS2C");
 		ProtocolMap.put("0011", "com.fsgame.controllerImp.PlayerMoveC2SImp");
 		ProtocolMap.put("0012", "class com.fsgame.proto.MSGPlayerMoveS2C$PlayerMoveS2C");
+		ProtocolMap.put("0013", "com.fsgame.controllerImp.ChatC2SImp");
+		ProtocolMap.put("0014", "class com.fsgame.proto.MSGChatS2C$ChatS2C");
 	}
 	
 	public FSCommonLib() {

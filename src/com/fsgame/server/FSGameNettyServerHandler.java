@@ -8,9 +8,13 @@ import com.fsgame.facade.FSGameObject;
 import com.fsgame.server.group.FSChannelGroups;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
 
 /**
  * @author sunweidong
@@ -53,12 +57,12 @@ public class FSGameNettyServerHandler extends ChannelHandlerAdapter {
 				} 
 	}
 	
-	@Override
-	@Skip
-	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		cause.printStackTrace();
-		ctx.close();
-	}
+//	@Override
+//	@Skip
+//	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+//		cause.printStackTrace();
+//		ctx.close();
+//	}
 	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -102,11 +106,34 @@ public class FSGameNettyServerHandler extends ChannelHandlerAdapter {
 	 * */
 	@Override
 	 public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-		 //用户下线的操作
+//		 //用户下线的操作
 		FSGameObject.removePlayerInfoFromClient(ctx);
 		ctx.close();
 		System.out.println(String.format("client(%s) close sucess", ctx.channel().localAddress().toString().substring(1)));
 		System.out.println("server 推送的消息："+ ctx.channel().remoteAddress() + "离开了服务器\n");
 	 }
+
+	/**
+	 * @author sunweidong
+	 * @category 服务端心跳机制
+	 *  1、客户端长时间未发送心跳包给服务端  表示客户端已经断开 断开该连接
+	 * */
+	@Override
+	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+		if(FSChannelGroups.size() != 0) {
+			System.out.println("20秒未收到客户端的消息，客户端异常！");
+			if (evt instanceof IdleStateEvent){
+	            IdleStateEvent event = (IdleStateEvent)evt;
+	            if (event.state()== IdleState.READER_IDLE){
+	                System.out.println("关闭客户端！");
+	                FSGameObject.removePlayerInfoFromClient(ctx);
+	                FSChannelGroups.discard(ctx.channel());
+	                ctx.channel().close();
+	            }
+	        }else {
+	            super.userEventTriggered(ctx,evt);
+	        }
+		}
+	}
 	
 }

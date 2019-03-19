@@ -10,3 +10,5 @@ HeatALiveC2S
 HeatALiveS2C
 PlayerMoveC2S
 PlayerMoveS2C
+ChatC2S
+ChatS2C

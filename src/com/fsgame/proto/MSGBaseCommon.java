@@ -262,6 +262,124 @@ public final class MSGBaseCommon {
     // @@protoc_insertion_point(enum_scope:Pro.MoveType)
   }
 
+  /**
+   * <pre>
+   *聊天类型
+   * </pre>
+   *
+   * Protobuf enum {@code Pro.ChatType}
+   */
+  public enum ChatType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <pre>
+     *玩家信息
+     * </pre>
+     *
+     * <code>_PLAYERCHAT_ = 0;</code>
+     */
+    _PLAYERCHAT_(0),
+    /**
+     * <pre>
+     *系统推送信息
+     * </pre>
+     *
+     * <code>_SYSTEMCHAT_ = 1;</code>
+     */
+    _SYSTEMCHAT_(1),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <pre>
+     *玩家信息
+     * </pre>
+     *
+     * <code>_PLAYERCHAT_ = 0;</code>
+     */
+    public static final int _PLAYERCHAT__VALUE = 0;
+    /**
+     * <pre>
+     *系统推送信息
+     * </pre>
+     *
+     * <code>_SYSTEMCHAT_ = 1;</code>
+     */
+    public static final int _SYSTEMCHAT__VALUE = 1;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static ChatType valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static ChatType forNumber(int value) {
+      switch (value) {
+        case 0: return _PLAYERCHAT_;
+        case 1: return _SYSTEMCHAT_;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<ChatType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        ChatType> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<ChatType>() {
+            public ChatType findValueByNumber(int number) {
+              return ChatType.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.fsgame.proto.MSGBaseCommon.getDescriptor().getEnumTypes().get(2);
+    }
+
+    private static final ChatType[] VALUES = values();
+
+    public static ChatType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private ChatType(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:Pro.ChatType)
+  }
+
   public interface CoordinateOrBuilder extends
       // @@protoc_insertion_point(interface_extends:Pro.Coordinate)
       com.google.protobuf.MessageOrBuilder {
@@ -1082,8 +1200,9 @@ public final class MSGBaseCommon {
       "\002\022\013\n\003map\030\005 \001(\005*)\n\nLoginState\022\013\n\007_FAILD_\020" +
       "\000\022\016\n\n_SUCESSED_\020\001*X\n\010MoveType\022\t\n\005_RUN_\020\000" +
       "\022\n\n\006_WALK_\020\001\022\014\n\010_SHOORT_\020\002\022\013\n\007_SKILL_\020\003\022" +
-      "\n\n\006_JUMP_\020\004\022\016\n\n_STOPJUMP_\020\005B!\n\020com.fsgam" +
-      "e.protoB\rMSGBaseCommonb\006proto3"
+      "\n\n\006_JUMP_\020\004\022\016\n\n_STOPJUMP_\020\005*.\n\010ChatType\022" +
+      "\020\n\014_PLAYERCHAT_\020\000\022\020\n\014_SYSTEMCHAT_\020\001B!\n\020c" +
+      "om.fsgame.protoB\rMSGBaseCommonb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
